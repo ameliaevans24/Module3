@@ -15,19 +15,21 @@
                                                                                                                                                                                                             
 /* the queue representation is hidden from users of the module */                                                                                                                                           
 //typedef void queue_t;                                                                                                                                                                                     
-                                                                                                                                                                                                            
-// Define custom data stucture for queue                                                                                                                                                                    
-typedef struct queue{                                                                                                                                                                                       
-  struct queue *front; // SHOULD THIS BE STRUCT QUEUE OR SOMETHING ELSE??                                                                                                                                   
-  struct queue *back;                                                                                                                                                                                       
-}queue_t;                                                                                                                                                                                                   
-                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                        
 // Define custom data structure for element                                                                                                                                                                 
-typedef struct node{                                                                                                                                                                                        
+typedef struct node{   
+  void *data;                                                                                                                                                                                      
   struct node *previous;                                                                                                                                                                                    
   struct node *next;                                                                                                                                                                                        
 }node_t;                                                                                                                                                                                                    
-                                                                                                                                                                                                            
+ 
+ // Define custom data stucture for queue                                                                                                                                                                    
+typedef struct queue{                                                                                                                                                                                       
+ node_t *front;                                                                                                                               
+ node_t *back;                                                                                                                                                                                       
+}queue_t;                                                                                                                                                                                                   
+            
+                                                                                                                                                                                                                       
 /* create an empty queue */                                                                                                                                                                                 
 queue_t* qopen(void){                                                                                                                                                                                       
                                                                                                                                                                                                             
