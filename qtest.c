@@ -42,7 +42,7 @@ void printq(queue_t *qp){
 bool searchfn(void* elementp,const void* keyp){
 
 	char *element = (char *)elementp;
-    char *key = (char *)skey;
+    char *key = (char *)keyp;
      
     return (*element == *key);	
 }
