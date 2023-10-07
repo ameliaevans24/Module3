@@ -9,6 +9,57 @@
  * 
  */
 #include "queue.h"
+#include <stdint.h>                                                                                                                                                                                         
+#include <stdlib.h> // For malloc function                                                                                                                                                                  
+#include <stdbool.h>                                                                                                                                                                                        
+                                                                                                                                                                                                            
+/* the queue representation is hidden from users of the module */                                                                                                                                           
+//typedef void queue_t;                                                                                                                                                                                     
+                                                                                                                                                                                                            
+// Define custom data stucture for queue                                                                                                                                                                    
+typedef struct queue{                                                                                                                                                                                       
+  struct queue *front; // SHOULD THIS BE STRUCT QUEUE OR SOMETHING ELSE??                                                                                                                                   
+  struct queue *back;                                                                                                                                                                                       
+}queue_t;                                                                                                                                                                                                   
+                                                                                                                                                                                                            
+// Define custom data structure for element                                                                                                                                                                 
+typedef struct node{                                                                                                                                                                                        
+  struct node *previous;                                                                                                                                                                                    
+  struct node *next;                                                                                                                                                                                        
+}node_t;                                                                                                                                                                                                    
+                                                                                                                                                                                                            
+/* create an empty queue */                                                                                                                                                                                 
+queue_t* qopen(void){                                                                                                                                                                                       
+                                                                                                                                                                                                            
+  // Allocate space for one instance of structure                                                                                                                                                           
+  queue_t *qp = (queue_t*)malloc(sizeof(queue_t));                                                                                                                                                          
+                                                                                                                                                                                                            
+  // Assign front and back for new queue                                                                                                                                                                    
+  qp -> front = NULL;                                                                                                                                                                                       
+  qp -> back = NULL;                                                                                                                                                                                        
+                                                                                                                                                                                                            
+  return qp;                                                                                                                                                                                                
+}                                                                                                                                                                                                           
+                                                                                                                                                                                                            
+/* deallocate a queue, frees everything in it */                                                                                                                                                            
+void qclose(queue_t *qp);                                                                                                                                                                                   
+                                                                                                                                                                                                            
+/* put element at the end of the queue                                                                                                                                                                      
+ * returns 0 is successful; nonzero otherwise                                                                                                                                                               
+ */                                                                                                                                                                                                         
+int32_t qput(queue_t *qp, void *elementp){                                                                                                                                                                  
+  if ((qp->front == NULL) && (qp->back == NULL)){                                                                                                                                                           
+    qp->front = elementp;                                                                                                                                                                                   
+    qp->back = elementp;                                                                                                                                                                                    
+  }                                                                                                                                                                                                         
+                                                                                                                                                                                                            
+  else{                                                                                                                                                                                                     
+    element->previous = qp->back;                                                                                                                                                                           
+    element->next = NULL;                                                                                                                                                                                   
+    qp -> back = elementp;                                                                                                                                                                                  
+  }                                                                                                                                                                                                         
+} 
+
 
 /* apply a function to every element of the queue */
 void qapply(queue_t *qp, void (*fn)(void* elementp)){
