@@ -1,9 +1,15 @@
 CFLAGS: -Wall -pedantic -std=c11 -l.	-g
 
-all:	test test1 test2 test3
+all:	qtest test test1 test2 test3
+
+queue.o:	queue.c	queue.h
+					gcc $(CFLAGS)	-c	queue.c
 
 list.o:	list.c list.h
 				gcc $(CFLAGS) -c list.c
+
+qtest.o:	qtest.c	queue.h
+					gcc	$(CFLAGS)	-c	qtest.c
 
 test.o:	test.c list.h
 				gcc $(CFLAGS) -c test.c
@@ -16,6 +22,9 @@ test2.o: 	test2.c list.h
 
 test3.o:	test3.c list.h
 					gcc $(CFLAGS) -c test3.c
+
+qtest:	qtest.o	queue.o
+				gcc	$(CFLAGS)	qtest.o	queue.o	-o	qtest.c
 
 test: 	test.o list.o
 				gcc $(CFLAGS) test.o list.o -o test
@@ -30,5 +39,6 @@ test3: 	test3.o list.o
 				gcc $(CFLAGS) test3.o list.o -o test3
 
 clean:
-			rm -f *.o test test1 test2 test3
+			rm -f *.o qtest	test test1 test2 test3
+
 
