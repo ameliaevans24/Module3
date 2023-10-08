@@ -1,0 +1,42 @@
+                                       
+/* qtest1.c ---                                                                 
+ *                                                                              
+ *                                                                              
+ * Author: Rashad C. Brown-Mitchell I.                                          
+ * Created: Sun Oct  8 13:15:24 2023 (-0400)                                    
+ * Version:                                                                     
+ *                                                                              
+ * Description:                                                                 
+ *                                                                              
+ */                                                                             
+                                                                                
+#include "queue.h"                                                              
+#include <stdlib.h>                                                             
+#include <stdio.h>                                                              
+                                                                                
+#define MAXREG 15                                                               c
+                                                                                
+// Define car struct                                                            
+typedef struct car {                                                            
+  struct car *next;                                                             
+  char plate[MAXREG];
+  double price;                                                                 
+  int year;                                                                     
+} car_t;                                                                        
+                                                                                
+int main(){                                                                     
+                                                                                
+  // Verify that queue opens properly                                           
+  void* qp = qopen();                                                           
+  printf("The address of qp is %p\n", qp);                                      
+  //exit(EXIT_SUCCESS);                                                         
+                                                                                
+  // Make an element to go into queue                                           
+  car_t car1 = {NULL, "ABC123", 20000, 2020};                                    
+                                                                                
+  // Verify that element enters queue                                           
+  qput(qp, &car1);                                                              
+  //exit(EXIT_SUCCESS); 
+
+}
+            
