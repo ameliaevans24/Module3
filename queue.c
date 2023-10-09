@@ -10,7 +10,8 @@
                                                                                              
 // Define custom data structure for element                                                  
 typedef struct node{                                                                         
-  void* elementp;     //pointer to element stored in node                                                                    
+  void* elementp;     //pointer to element stored in node  
+  struct node *previous;                                                                   
   struct node *next; //pointer to the next node                                                                         
 }node_t;                                                                                     
                                                                                              
@@ -41,19 +42,34 @@ void qclose(queue_t *qp){
 /* put element at the end of the queue                                                                                                                                                                      
  * returns 0 is successful; nonzero otherwise                                                                                                                                                               
  */                                                                                                                                                                                                         
-int32_t qput(queue_t *qp, void *elementp){                                                   
-  if ((qp->front == NULL) && (qp->back == NULL)){                                            
-    qp->front = elementp;                                                                    
-    qp->back = elementp;                                                                     
-  }                                                                                          
-                                                                                             
-  else{                                                                                      
-    qp -> back = elementp;                                                                   
-    //node_t element = (node_t) elementp;                                                    
-    //element.previous = qp->back;                                                           
-    //element.next = NULL;                                                                   
-  }                                                                                          
-}                                                                                            
+int32_t qput(queue_t *qp, void *elementp) {
+    if (qp == NULL || elementp == NULL) {
+        return -1; // Invalid input
+    }
+
+    node_t *new_node = (node_t *)malloc(sizeof(node_t));
+    if (new_node == NULL) {
+        return -1; // Memory allocation failed
+    }
+    
+	new_node->previous = NULL; 
+    new_node->next = NULL;
+    new_node->elementp = elementp;
+
+    if (qp->front == NULL && qp->back == NULL) {
+        // The queue is empty, so both front and back point to the new element
+        qp->front = new_node;
+        qp->back = new_node;
+    } else {
+        // Add a new element to the end of the queue
+        new_node->previous = qp->back;
+        qp->back->next = new_node;
+        qp->back = new_node;
+    }
+
+    return 0; // Success
+}
+                                                                                           
                                                                                              
 /* get the first first element from queue, removing it from the queue */                     
 void* qget(queue_t *qp){                                                                     
@@ -72,7 +88,7 @@ void* qget(queue_t *qp){
 void qapply(queue_t *qp, void (*fn)(void* elementp)){                                        
   node_t *current = qp->front;                                                               
   do{                                                                                        
-    fn(current);                                                                             
+    fn(current->elementp);                                                                             
     current = current->next;                                                                 
   } while (current != qp->back);                                                             
                                                                                              
