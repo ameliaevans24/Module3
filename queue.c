@@ -87,6 +87,7 @@ void qapply(queue_t *qp, void (*fn)(void* elementp)){
  *          -- returns TRUE or FALSE as defined in bool.h
  * returns a pointer to an element, or NULL if not found
  */
+void* qsearch(queue_t *qp, bool (*searchfn)(void* elementp, const void* keyp), const void* skeyp) {
 if (qp == NULL || searchfn == NULL || skeyp == NULL) {
         return NULL; // Invalid input
     }
