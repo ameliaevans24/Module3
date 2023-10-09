@@ -84,11 +84,10 @@ void* qget(queue_t *qp){
 /* apply a function to every element of the queue */                                         
 void qapply(queue_t *qp, void (*fn)(void* elementp)){                                        
   node_t *current = qp->front;                                                               
-  do{                                                                                        
+  while (current != NULL) {                                                                                        
     fn(current->elementp);                                                                             
     current = current->next;                                                                 
-  } while (current != qp->back);                                                             
-                                                                                             
+  }                                                                                                                                                      
 } 
 
 /* search a queue using a supplied boolean function
@@ -115,4 +114,15 @@ if (qp == NULL || searchfn == NULL || skeyp == NULL) {
     }
 
     return NULL; // Element not found
+}
+
+/* concatenatenates elements of q2 into q1
+ * q2 is dealocated, closed, and unusable upon completion 
+ */
+void qconcat(queue_t *q1p, queue_t *q2p){
+		while ((q1p->front != NULL)&&(q2p->front != NULL)){
+			q1p->back->next = q2p->front;
+        	q1p->back = q2p->front;
+		}
+			free(q2p); 
 }
