@@ -10,8 +10,7 @@
                                                                                              
 // Define custom data structure for element                                                  
 typedef struct node{                                                                         
-  void* elementp;     //pointer to element stored in node  
-  struct node *previous;                                                                   
+  void* elementp;     //pointer to element stored in node                                                                   
   struct node *next; //pointer to the next node                                                                         
 }node_t;                                                                                     
                                                                                              
@@ -52,7 +51,6 @@ int32_t qput(queue_t *qp, void *elementp) {
         return -1; // Memory allocation failed
     }
     
-	new_node->previous = NULL; 
     new_node->next = NULL;
     new_node->elementp = elementp;
 
@@ -62,7 +60,6 @@ int32_t qput(queue_t *qp, void *elementp) {
         qp->back = new_node;
     } else {
         // Add a new element to the end of the queue
-        new_node->previous = qp->back;
         qp->back->next = new_node;
         qp->back = new_node;
     }
