@@ -5,6 +5,11 @@
 
 #define MAXREG 15
 
+//Define struct for printing
+typedef struct printStruct{
+	char element[MAXREG]; 
+} printStruct_t; 
+
 // Define car struct
 typedef struct car {
     char plate[MAXREG];
@@ -26,16 +31,10 @@ typedef struct fruit {
 
 // Define print function
 void printq(void *elementp) {
-    car_t *car = (car_t *)elementp;
-    house_t *house = (house_t *)elementp;
-    fruit_t *fruit = (fruit_t *)elementp;
+    printStruct_t *printStruct = (printStruct_t *)elementp;
 
-    if (car != NULL) {
-        printf("Car with plate: %s, year: %d, price: %.2lf\n", car->plate, car->year, car->price);
-    } else if (house != NULL) {
-        printf("House with style: %s, year: %d, price: %.2lf\n", house->style, house->year, house->price);
-    } else if (fruit != NULL) {
-        printf("Fruit of type: %s\n", fruit->type);
+    if (printStruct->element != NULL) {
+        printf("The element stored in the queue here is: %s\n", printStruct->element);
     }
 }
 
