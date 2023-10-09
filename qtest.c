@@ -55,7 +55,7 @@ int main() {
     queue_t *qp1 = qopen();
 
     // Define Elements
-    car_t car1 = {"ABC123", 20000.0, 2020};
+    car_t car1 = {"ABC123", 20000.0, 2014};
     house_t house1 = {"Colonial", 1809, 500000.0};
     fruit_t fruit1 = {"Banana"};
 
@@ -84,17 +84,23 @@ int main() {
     house_t house2 = {"Art Deco", 1929, 550000.0};
     fruit_t fruit2 = {"Orange"};
     
-    //Concatenate q1 and q2
-    qconcat(qp1, qp2); 
     
-    //Put Elements in queue (2)
-	qput(qp1, &car2);
-    qput(qp1, &house2);
-    qput(qp1, &fruit2);
+    //Put Elements in queue 2
+	qput(qp2, &car2);
+    qput(qp2, &house2);
+    qput(qp2, &fruit2);
     
-    //Apply function to new queue (q1)
+    //Apply function to queue 2
+	printf("The queue 2 is:\n"); 
+    qapply(qp2,printq); 
+        
+    //Concatenate queue 1 and queue 2
+    qconcat(qp1, qp2);  
+    
+    //Apply function to newly concatenated queue 1
+    printf("The new queue 1 is:\n"); 
     qapply(qp1,printq); 
-    
+
     // Clean up
     qclose(qp1);
 
