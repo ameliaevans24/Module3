@@ -10,8 +10,8 @@
                                                                                              
 // Define custom data structure for element                                                  
 typedef struct node{                                                                         
-  void* previous;                                                                            
-  void* next;                                                                                
+  void* elementp;     //pointer to element stored in node                                                                    
+  struct node *next; //pointer to the next node                                                                         
 }node_t;                                                                                     
                                                                                              
 // Define custom data stucture for queue                                                     
