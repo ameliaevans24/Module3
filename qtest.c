@@ -7,7 +7,6 @@
 
 // Define car struct
 typedef struct car {
-    struct car *next;
     char plate[MAXREG];
     double price;
     int year;
@@ -15,7 +14,6 @@ typedef struct car {
 
 // Define house struct
 typedef struct house {
-    struct house *next;
     char style[MAXREG];
     double price;
     int year;
@@ -23,7 +21,6 @@ typedef struct house {
 
 // Define fruit struct
 typedef struct fruit {
-    struct fruit *next;
     char type[MAXREG];
 } fruit_t;
 
@@ -56,33 +53,51 @@ bool searchfn(void *elementp, const void *keyp) {
 
 int main() {
     // Initialize queue
-    queue_t *qp = qopen();
+    queue_t *qp1 = qopen();
 
     // Define Elements
-    car_t car1 = {NULL, "ABC123", 2020, 20000.0};
-    house_t house1 = {NULL, "Colonial", 1809, 500000.0};
-    fruit_t fruit1 = {NULL, "Banana"};
+    car_t car1 = {"ABC123", 20000.0, 2020};
+    house_t house1 = {"Colonial", 1809, 500000.0};
+    fruit_t fruit1 = {"Banana"};
 
     // Put Elements in queue
-    qput(qp, &fruit1);
-    qput(qp, &house1);
-    qput(qp, &car1);
+    qput(qp1, &car1);
+    qput(qp1, &house1);
+    qput(qp1, &fruit1);
 
     // Apply Function to queue
-    qapply(qp, printq);
+    qapply(qp1, printq);
 
     // Use qsearch function
     const char *qfind = "Colonial";
-    queue_t *qfound = qsearch(qp, searchfn, (void *)qfind); // Search queue for house of style Colonial
+    queue_t *qfound = qsearch(qp1, searchfn, (void *)qfind); // Search queue for house of style Colonial
 
     if (qfound != NULL) {
         printf("Found the house of style: %s\n", qfind);
     } else {
         printf("House of style: %s not found in the queue.\n", qfind);
     }
-
+	// Initialize second queue
+	queue_t *qp2 = qopen(); 
+	
+	//Define Elements of q2
+    car_t car2 = {"XYZ789", 30000.0, 2023};
+    house_t house2 = {"Art Deco", 1929, 550000.0};
+    fruit_t fruit2 = {"Orange"};
+    
+    //Concatenate q1 and q2
+    qconcat(qp1, qp2); 
+    
+    //Put Elements in queue (2)
+	qput(qp1, &car2);
+    qput(qp1, &house2);
+    qput(qp1, &fruit2);
+    
+    //Apply function to new queue (q1)
+    qapply(qp1,printq); 
+    
     // Clean up
-    qclose(qp);
+    qclose(qp1);
 
     return 0;
 }
