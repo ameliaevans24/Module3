@@ -106,7 +106,7 @@ int32_t hput(hashtable_t *htp, void* ep, const chat *key, int keylen) {
   newNode -> key = key;                                                         
   uint32_t hashCode = SuperFastHash(ep, keylen, htp->size);                     
   newNode -> qp = htp -> table[hashCode] -> qp;                                 
-  newNodeQueue = newNode -> qp;                                                 
+  queue_t* newNodeQueue = newNode -> qp;                                                 
   qput(newNodeQueue, ep);     
  //still need return statement for when it's wrong                             
   return 0;                                                                     
