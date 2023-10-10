@@ -73,13 +73,34 @@ hashtable_t* hopen(uint32_t hsize) {
                                                                                 
   //loop through each node created and give it an empty queue                   
   for(i = 0; i <hsize; i++) {                                                   
-    newHashTable -> table[i] = (HashTableNode*)malloc(spaceForAllNodes);        
+    newHashTable -> table[i] = (HashTableNode*)malloc(HashTableNode);       
     newHashTable -> table[i] -> key = NULL;                                     
     newHashTable -> table[i] -> qp = qopen();                                   
   }                                                                             
                                                                                 
   return newHashTable;
-}                                                                               
+}    
+void hclose(hashtable_t *htp) {                                                                          
+  //it's already empty                                                                                   
+  if (htp == NULL) {                                                                                     
+    return;                                                                                              
+  }                                                                                                      
+  //free the queues within the node                                                                      
+  for (i = 0; i < htp -> size; i++) {                                                                    
+    qclose(htp->table[i] ->qp);                                                                          
+                                                                                                         
+    //free the nodes themselves                                                                          
+    free(htp->table[i]);                                                                                 
+                                                                                                         
+  }                                                                                                      
+                                                                                                         
+  //free the table of pointers                                                                           
+  free(htp-> table);                                                                                     
+                                                                                                         
+  //free the hashtable itself                                                                            
+  free(htp);                                                                                             
+                                                                                                         
+}   
                                                                                 
 int32_t hput(hashtable_t *htp, void* ep, const chat *key, int keylen) {         
   HashTableNode* newNode = (HashTableNode*)malloc(sizeof(HashTableNode));       
