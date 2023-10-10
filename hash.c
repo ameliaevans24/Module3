@@ -54,14 +54,13 @@ static uint32_t SuperFastHash (const char *data,int len,uint32_t tablesize) {
 //the stuff i added                                                                                
 typedef struct HashTableNode{                                                   
   int key;                                                                      
-  queue_t *qp;                                                                  
-                                                                                
+  queue_t *qp;                                                                                                                                    
 }HashTableNode;  
+
 typedef struct hashtable{                                                       
   uint32_t size;                                                                
   //pointer that points to other pointers that point to hashtablenodes          
-  HashTableNode** table;                                                        
-                                                                                
+  HashTableNode** table;                                                                                                                         
 }hashtable;                                                                     
                                                                                 
 hashtable_t* hopen(uint32_t hsize) {                                            
