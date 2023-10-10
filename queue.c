@@ -34,14 +34,16 @@ queue_t* qopen(void){
 }                                                                                            
                                                                                              
 /* deallocate a queue, frees everything in it */                                             
-void qclose(queue_t *qp){   
-	node_t *current = qp->front;                                                               
-  		while (current != NULL) {  
-  			current = current->next; 
-  			free(qp->front); 
-  			qp->front = current; 
-  		}    
-  		free(qp);                                                                                                                                                                                                              
+void qclose(queue_t *qp){                                                       
+  node_t *current = qp->front;                                                  
+  node_t *temp = NULL;                                                          
+  while (current != NULL) {                                                     
+    temp = current->next;                                                       
+    free(current);                                                              
+    current = temp;                                                             
+  }                                                                             
+  free(qp);                                                                    \
+                                                                                
 }                                                                                                                                                                                  
                                                                                                                                                                                                             
 /* put element at the end of the queue                                                                                                                                                                      
@@ -125,11 +127,10 @@ if (qp == NULL || searchfn == NULL || skeyp == NULL) {
 /* concatenatenates elements of q2 into q1
  * q2 is dealocated, closed, and unusable upon completion 
  */
-void qconcat(queue_t *q1p, queue_t *q2p){
-		if ((q1p->front != NULL)&&(q2p->front != NULL)){
-			q1p->back->next = q2p->front;
-        	q1p->back = q2p->front;
-		} 
-		
-  		free(q2p);          
-}
+void qconcat(queue_t *q1p, queue_t *q2p){                                       
+  if ((q1p->front != NULL)&&(q2p->front != NULL)){                              
+    q1p->back->next = q2p->front;                                               
+    q1p->back = q2p->back;                                                      
+  }                                                                             
+  free(q2p);                                                                    
+} 
