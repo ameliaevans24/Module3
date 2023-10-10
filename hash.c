@@ -101,7 +101,19 @@ void hclose(hashtable_t *htp) {
                                                                                                          
 }   
                                                                                 
-int32_t hput(hashtable_t *htp, void* ep, const chat *key, int keylen) {         
+int32_t hput(hashtable_t *htp, void* ep, const chat *key, int keylen) {   
+    //argument issue                                                                                       
+  if (htp == NULL || key == NULL || ep == NULL || keylen == NULL) {                                      
+    return -1;                                                                                           
+  }                                                                                                      
+                                                                                                         
+  HashTableNode* newNode = (HashTableNode*)malloc(sizeof(HashTableNode));                                
+                                                                                                         
+  //memory allocation issue                                                                              
+  if (newNode == NULL) {                                                                                 
+    return -1;                                                                                           
+  }  
+  
   HashTableNode* newNode = (HashTableNode*)malloc(sizeof(HashTableNode));       
   newNode -> key = key;                                                         
   uint32_t hashCode = SuperFastHash(ep, keylen, htp->size);                     
