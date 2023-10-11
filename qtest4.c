@@ -1,73 +1,58 @@
-* qtest5.c ---                                                                                                                                                                                             
+/* qtest4.c ---                                                                                                                                                                                             
  *                                                                                                                                                                                                          
  *                                                                                                                                                                                                          
- * Author: Amelia H. Evans                                                                                                                                                                                  
- * Created: Mon Oct  9 17:57:07 2023 (-0400)                                                                                                                                                                
+ * Author: Rashad C. Brown-Mitchell I.                                                                                                                                                                      
+ * Created: Sun Oct  8 13:15:24 2023 (-0400)                                                                                                                                                                
  * Version:                                                                                                                                                                                                 
  *                                                                                                                                                                                                          
- * Description: Test for functionality of qsearch                                                                                                                                                           
+ * Description:                                                                                                                                                                                             
  *                                                                                                                                                                                                          
  */                                                                                                                                                                                                         
+                                                                                                                                                                                                            
 #include "queue.h"                                                                                                                                                                                          
 #include <stdlib.h>                                                                                                                                                                                         
 #include <stdio.h>                                                                                                                                                                                          
-#include <stdbool.h>                                                                                                                                                                                        
-#include <string.h>                                                                                                                                                                                         
                                                                                                                                                                                                             
 #define MAXREG 15                                                                                                                                                                                           
                                                                                                                                                                                                             
-//Define struct for printing                                                                                                                                                                                
-typedef struct printStruct{                                                                                                                                                                                 
-  char element[MAXREG];                                                                                                                                                                                     
-} printStruct_t;                                                                                                                                                                                            
-                                                                                                                                                                                                            
 // Define car struct                                                                                                                                                                                        
 typedef struct car {                                                                                                                                                                                        
-    char plate[MAXREG];                                                                                                                                                                                     
-    double price;                                                                                                                                                                                           
-    int year;                                                                                                                                                                                               
+  struct car *next;                                                                                                                                                                                         
+  char plate[MAXREG];                                                                                                                                                                                       
+  double price;                                                                                                                                                                                             
+  int year;                                                                                                                                                                                                 
 } car_t;                                                                                                                                                                                                    
                                                                                                                                                                                                             
-// Define house struct                                                                                                                                                                                      
-typedef struct house {                                                                                                                                                                                      
-    char style[MAXREG];                                                                                                                                                                                     
-    double price;                                                                                                                                                                                           
-    int year;                                                                                                                                                                                               
-} house_t;                                                                                                                                                                                                  
-                                                                                                                                                                                                            
-// Define fruit struct                                                                                                                                                                                      
-typedef struct fruit {                                                                                                                                                                                      
-    char type[MAXREG];                                                                                                                                                                                      
-} fruit_t;                                                                                                                                                                                                  
-                                                                                                                                                                                                            
 // Define print function                                                                                                                                                                                    
-void printq(void *elementp) {                                                                                                                                                                               
-    printStruct_t *printStruct = (printStruct_t *)elementp;                                                                                                                                                 
+void printq(void* elementp){                                                                                                                                                                                
+  printf("Contents of this element Address: %p\n", elementp);                                                                                                                                               
+  }                                                                                                                                                                                                         
                                                                                                                                                                                                             
-    if (printStruct->element != NULL) {                                                                                                                                                                     
-        fprintf( stdout, "The element stored in the queue here is: %s\n", printStruct->element);                                                                                                            
-    }                                                                                                                                                                                                       
-}                                                                                                                                                                                                           
+int main(){                                                                                                                                                                                                 
                                                                                                                                                                                                             
+  void* qp = qopen();                                                                                                                                                                                       
+  printf("The address of our queue is %p\n", qp);                                                                                                                                                           
                                                                                                                                                                                                             
-int main() {                                                                                                                                                                                                
-    // Initialize queue                                                                                                                                                                                     
-    queue_t *qp1 = qopen();                                                                                                                                                                                 
+  car_t car1 = {NULL, "ABC123", 20000, 2020};                                                                                                                                                               
+  car_t car2 = {NULL, "DEF456", 32000, 2001};                                                                                                                                                               
+  car_t car3 = {NULL, "GHI789", 50000, 1997};                                                                                                                                                               
+  car_t car4 = {NULL, "AAA666", 17000, 2017};                                                                                                                                                               
                                                                                                                                                                                                             
-    // Define Elements                                                                                                                                                                                      
-    car_t car1 = {"ABC123", 20000.0, 2014};                                                                                                                                                                 
-    house_t house1 = {"Colonial", 1809, 500000.0};                                                                                                                                                          
-    fruit_t fruit1 = {"Banana"};                          
+  qput(qp, &car1);                                                                                                                                                                                          
+  qput(qp, &car2);                                                                                                                                                                                          
+  qput(qp, &car3);                                                                                                                                                                                          
+  qput(qp, &car4);                                                                                                                                                                                          
                                                                                                                                                                                                             
-    // Put Elements in queue                                                                                                                                                                                
-    qput(qp1, &car1);                                                                                                                                                                                       
-    qput(qp1, &house1);                                                                                                                                                                                     
-    qput(qp1, &fruit1);                                                                                                                                                                                     
+  // Verify that first element is removed from queue                                                                                                                                                        
+  void* removedElmt = qget(qp);                                                                                                                                                                             
+  printf("The address of our removed element is %p\n", removedElmt);                                                                                                                                        
+  removedElmt = qget(qp);                                                                                                                                                                                   
+  printf("The address of our removed element is %p\n", removedElmt);                                                                                                                                        
+  removedElmt = qget(qp);                                                                                                                                                                                   
+  printf("The address of our removed element is %p\n", removedElmt);                                                                                                                                        
+  qapply(qp,printq);                                                                                                                                                                                        
                                                                                                                                                                                                             
-    // Apply Function to queue                                                                                                                                                                              
-    qapply(qp1, printq);                                                                                                                                                                                    
+  qclose(qp);                                                                                                                                                                                               
                                                                                                                                                                                                             
-    exit(EXIT_SUCCESS);                                                                                                                                                                                     
-                                                                                                                                                                                                            
-}                                                                                                                                                                                                           
-    
+  exit(EXIT_SUCCESS);                                                                                                                                                                                       
+}                   
