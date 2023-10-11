@@ -1,0 +1,36 @@
+CFLAGS=-Wall -pedantic -std=c11 -I. -g                                          
+                                                                                
+all: qtest qtest1 qtest2 qtest3 qtest4 qtest5 qtest6 qtest7       
+                                                                                
+%.o:  %.c                                                                       
+      gcc $(CFLAGS) -c $<                                                       
+                                                                                
+qtest:  qtest.o queue1.o                                                        
+        gcc $(CFLAGS) qtest.o queue1.o -o qtest                                 
+                                                                                
+qtest1: qtest1.o queue1.o                                                       
+        gcc $(CFLAGS) qtest1.o queue1.o -o qtest1                               
+                                                                                
+qtest2:   qtest2.o queue.h                                                      
+          gcc $(CFLAGS) qtest2.o queue1.o -o qtest2                             
+                                                                                
+qtest3:   qtest3.o queue.h                                                      
+          gcc $(CFLAGS) qtest3.o queue1.o -o qtest3                             
+                                                                                
+qtest4:   qtest4.o queue.h                                                      
+          gcc $(CFLAGS) qtest4.o queue1.o -o qtest4    
+          qtest5:   qtest5.o queue.h                                                      
+          gcc $(CFLAGS) qtest5.o queue1.o -o qtest5                             
+                                                                                
+qtest6:   qtest6.o queue.h                                                      
+          gcc $(CFLAGS) qtest6.o queue1.o -o qtest6                             
+                                                                                
+qtest7:   qtest7.o queue.h                                                      
+          gcc $(CFLAGS) qtest7.o queue1.o -o qtest7        
+          
+clean:                                                                          
+      rm -f *.o qtest qtest1 qtest2 qtest3 qtest4 qtest5 qtest6 qtest7                                                                           
+    
+
+                                                                                
+   
