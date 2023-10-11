@@ -77,16 +77,16 @@ int32_t qput(queue_t *qp, void *elementp) {
                                                                                            
                                                                                              
 /* get the first first element from queue, removing it from the queue */                     
-void* qget(queue_t *qp){                                                                     
-  if ((qp->front != NULL) && (qp->back != NULL)){                                            
-    void *removed = qp->front;                                                               
-                                                                                             
-    node_t *current;                                                                         
-    current = qp->front;                                                                     
-    qp->front = current->next;                                                               
-                                                                                             
-    return removed;                                                                          
-  }                                                                                          
+void* qget(queue_t *qp){     
+  void* removed;                                                              
+  node_t* current; 
+  if ((qp->front != NULL) && (qp->back != NULL)){                                                                                           
+    current = qp->front;                                                        
+    qp->front = current->next;                                                  
+    removed = current;                                                                                                                     
+  }                                                                             
+  return removed;                                                                               
+                                                                                
 }                                                                                            
                                                                                              
 /* apply a function to every element of the queue */                                         
