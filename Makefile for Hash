@@ -1,0 +1,24 @@
+CFLAGS=-Wall -pedantic -std=c11 -I. -g                                                                                                      
+                                                                                                                                            
+all:  test htest                                                                                                                            
+                                                                                                                                            
+queue1.o: queue1.c queue.h                                                                                                                  
+          gcc ${CFLAGS} -c queue1.c                                                                                                         
+                                                                                                                                            
+hash.o:   hash.c queue.h hash.c                                                                                                             
+          gcc ${CFLAGS} -c hash.c queue.c                                                                                                   
+                                                                                                                                            
+htest.o:  htest.c hash.h queue.h                                                                                                            
+          gcc ${CFLAGS} -c htest.c queue.c                                                                                                  
+                                                                                                                                            
+htest:    htest.o hash.o                                                                                                                    
+          gcc ${CFLAGS} htest.o hash.o queue1.o -o htest                                                                                    
+                                                                                                                                            
+test.o: test.c queue.h                                                                                                                      
+        gcc ${CFLAGS} -c test.c                                                                                                             
+                                                                                                                                            
+test:   test.o queue1.o                                                                                                                     
+        gcc ${CFLAGS} test.o queue1.o -o test                                                                                               
+                                                                                                                                            
+clean:                                                                                                                                      
+      rm -f *.o test  
