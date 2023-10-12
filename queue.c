@@ -134,3 +134,37 @@ void qconcat(queue_t *q1p, queue_t *q2p){
   }                                                                             
   free(q2p);                                                                    
 } 
+
+void* qremove(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp),const void* skeyp){
+	if (skeyp == NULL || qp == NULL) {
+        return NULL; // Invalid input or empty queue
+    }
+    node_t *current = qp->front; 
+    
+    if (current != NULL && searchfn(current->elementp, skeyp)) {
+        // Element to be removed is the front of the queue
+        qp->front = current->next;
+        if (current == qp->back) {
+            qp->back = NULL;
+        }
+        void* removed = current->elementp;
+        free(current);
+        return removed; 
+    }
+    
+    while (current != NULL && current->next != NULL) {
+        if (searchfn(current->next->elementp, skeyp)) {
+            if (current->next == qp->back) {
+                qp->back = current;
+            }
+            node_t *temp = current->next;
+            current->next = current->next->next;
+            void* removed_element = temp->elementp;
+            free(temp);
+            return removed_element; // Element found and removed
+        }
+        current = current->next;
+    }
+
+    return NULL; // Element not found
+}
