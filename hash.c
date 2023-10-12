@@ -83,11 +83,11 @@ hashtable_t *hopen(uint32_t hsize) {
   newHashTable -> table = (HashTableNode**)malloc(spaceForAllNodes);                                                                                                                                        
                                                                                                                                                                                                             
   //loop through each node created and give it an empty queue                                                                                                                                               
-  for(int i = 0; i <hsize; i++) {                                                                                                                                                                           
-    newHashTable -> table = (HashTableNode**)malloc(sizeof(HashTableNode));                                                                                                                               
-    newHashTable -> table[i] -> key = NULL;                                                                                                                                                                 
-    newHashTable -> table[i] -> qp = qopen(); 
-  }                                                                                                                                                                                                        
+  for(int i = 0; i < hsize; i++) {
+    newHashTable->table[i] = (HashTableNode*)malloc(sizeof(HashTableNode));
+    newHashTable->table[i]->key = NULL;
+    newHashTable->table[i]->qp = qopen();
+}                                                                                                                                                                                                   
                                                                                                                                                                                                             
   return (hashtable_t*) newHashTable;                                                                                                                                                                                      
 }                                                                                                                                                                                                           
