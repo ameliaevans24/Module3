@@ -1,0 +1,48 @@
+/* htest1.c ---                                                                                                                                                                                             
+ *                                                                                                                                                                                                          
+ *                                                                                                                                                                                                          
+ * Author: Rashad C. Brown-Mitchell I.                                                                                                                                                                      
+ * Created: Wed Oct 11 18:31:32 2023 (-0400)                                                                                                                                                                
+ * Version:                                                                                                                                                                                                 
+ *                                                                                                                                                                                                          
+ * Description:                                                                                                                                                                                             
+ *                                                                                                                                                                                                          
+ */                                                                                                                                                                                                         
+                                                                                                                                                                                                            
+#include "queue.h"                                                                                                                                                                                          
+#include "hash.h"                                                                                                                                                                                           
+#include <stdlib.h>                                                                                                                                                                                         
+#include <stdio.h>                                                                                                                                                                                          
+                                                                                                                                                                                                            
+// Define car struct                                                                                                                                                                                        
+typedef struct car {                                                                                                                                                                                        
+                                                                                                                                                                                                            
+  struct car *next;                                                                                                                                                                                         
+  char plate[10];                                                                                                                                                                                           
+  double price;                                                                                                                                                                                             
+  int year;                                                                                                                                                                                                 
+} car_t;                                                                                                                                                                                                    
+                                                                                                                                                                                                            
+void printq(void* elementp){                                                                                                                                                                                
+  printf("Contents of this element Address: %p\n", elementp);                                                                                                                                               
+}                                                                                                                                                                                                           
+                                                                                                                                                                                                            
+int main(){                                                                                                                                                                                                 
+  car_t car1 = {NULL, "ABC123", 20000, 2020};                                                                                                                                                               
+  car_t car2 = {NULL, "DEF456", 32000, 2001};                                                                                                                                                               
+  car_t car3 = {NULL, "GHI789", 50000, 1997};                                                                                                                                                               
+  const char* key = "Key";                                                                                                                                                                                  
+                                                                                                                                                                                                            
+  void* car1adr = &car1;                                                                                                                                                                                    
+  void* car2adr = &car2;                                                                                                                                                                                    
+  void* car3adr = &car3;                                                                                                                                                                                    
+  hashtable_t* hTable = hopen(5);                                                                                                                                                                           
+                                                                                                                                                                                                            
+  hput(hTable, car1adr, key, 1);                                                                                                                                                                            
+  hput(hTable, car2adr, key, 2);                                                                                                                                                                            
+  hput(hTable, car3adr, key, 3);                                                                                                                                                                            
+  happly(hTable, printq);                                                                                                                                                                                   
+                                                                                                                                                                                                            
+  hclose(hTable);                                                                                                                                                                                           
+  exit(EXIT_SUCCESS);                                                                                                                                                                                       
+} 
