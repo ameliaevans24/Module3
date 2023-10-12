@@ -33,15 +33,15 @@ int main(){
   const char* key1 = "Key1";      
   const char* key2 = "Key2";       
   const char* key3 = "Key3";                                                                                                                                                                         
-                                                                                                                                                                                                            
-  void* car1adr = &car1;                                                                                                                                                                                    
-  void* car2adr = &car2;                                                                                                                                                                                    
-  void* car3adr = &car3;                                                                                                                                                                                    
+                                                                                                                                                                                                         
+  //void* car1adr = &car1;                                                                                                                                                                                    
+  //void* car2adr = &car2;                                                                                                                                                                                    
+  //void* car3adr = &car3;                                                                                                                                                                                    
   hashtable_t* hTable = hopen(5);                                                                                                                                                                           
                                                                                                                                                                                                             
-  hput(hTable, car1adr, key1, 4);                                                                                                                                                                            
-  hput(hTable, car2adr, key2, 4);                                                                                                                                                                            
-  hput(hTable, car3adr, key3, 4);                                                                                                                                                                            
+  hput(hTable, &car1, key1, 4);                                                                                                                                                                            
+  hput(hTable, &car2, key2, 4);                                                                                                                                                                            
+  hput(hTable, &car3, key3, 4);                                                                                                                                                                            
   happly(hTable, printq);                                                                                                                                                                                   
                                                                                                                                                                                                             
   hclose(hTable);                                                                                                                                                                                           
