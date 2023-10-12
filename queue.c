@@ -1,170 +1,109 @@
-/*                                                                                           
- * queue.c -- public interface to the queue module                                           
- */                                                                                          
-#include <stdint.h>                                                                          
-#include <stdlib.h> // For malloc function                                                   
-#include <stdbool.h>                                                                         
-                                                                                             
-/* the queue representation is hidden from users of the module */                            
-//typedef void queue_t;                                                                      
-                                                                                             
-// Define custom data structure for element                                                  
-typedef struct node{                                                                         
-  void* elementp;     //pointer to element stored in node                                                                   
-  struct node *next; //pointer to the next node                                                                         
-}node_t;                                                                                     
-                                                                                             
-// Define custom data stucture for queue                                                     
-typedef struct queue{                                                                        
-  struct node* front;                                                                        
-  struct node* back;                                                                         
-}queue_t;                                                                                    
-                                                                                             
-/* create an empty queue */                                                                  
-queue_t* qopen(void){                                                                        
-                                                                                             
-  // Allocate space for one instance of structure                                            
-  queue_t *qp = (queue_t*)malloc(sizeof(queue_t));                                           
-                                                                                             
-  // Assign front and back for new queue                                                     
-  qp -> front = NULL;                                                                        
-  qp -> back = NULL;                                                                         
-                                                                                             
-  return qp;                                                                                 
-}                                                                                            
-                                                                                             
-/* deallocate a queue, frees everything in it */                                             
-void qclose(queue_t *qp){                                                       
-  node_t *current = qp->front;                                                  
-  node_t *temp = NULL;                                                          
-  while (current != NULL) {                                                     
-    temp = current->next;                                                       
-    free(current);                                                              
-    current = temp;                                                             
-  }                                                                             
-  free(qp);                                                                    \
-                                                                                
-}                                                                                                                                                                                  
-                                                                                                                                                                                                            
-/* put element at the end of the queue                                                                                                                                                                      
- * returns 0 is successful; nonzero otherwise                                                                                                                                                               
- */                                                                                                                                                                                                         
-int32_t qput(queue_t *qp, void *elementp) {
-    if (qp == NULL || elementp == NULL) {
-        return -1; // Invalid input
+#include "queue.h"
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+#define MAXREG 15
+
+//Define struct for printing
+typedef struct printStruct{
+	char element[MAXREG]; 
+} printStruct_t; 
+
+// Define car struct
+typedef struct car {
+    char plate[MAXREG];
+    double price;
+    int year;
+} car_t;
+
+// Define house struct
+typedef struct house {
+    char style[MAXREG];
+    double price;
+    int year;
+} house_t;
+
+// Define fruit struct
+typedef struct fruit {
+    char type[MAXREG];
+} fruit_t;
+
+// Define print function
+void printq(void *elementp) {
+    printStruct_t *printStruct = (printStruct_t *)elementp;
+
+    if (printStruct->element != NULL) {
+        printf("The element stored in the queue here is: %s\n", printStruct->element);
+    }
+}
+
+// Define search function
+bool searchfn(void *elementp, const void *keyp) {
+    house_t *house = (house_t *)elementp;
+    const char *key = (const char *)keyp;
+
+    if (house != NULL && strcmp(house->style, key) == 0) {
+        return true;
     }
 
-    node_t *new_node = (node_t *)malloc(sizeof(node_t));
-    if (new_node == NULL) {
-        return -1; // Memory allocation failed
-    }
-    
-    new_node->next = NULL;
-    new_node->elementp = elementp;
+    return false;
+}
 
-    if (qp->front == NULL && qp->back == NULL) {
-        // The queue is empty, so both front and back point to the new element
-        qp->front = new_node;
-        qp->back = new_node;
+int main() {
+    // Initialize queue
+    queue_t *qp1 = qopen();
+
+    // Define Elements
+    car_t car1 = {"ABC123", 20000.0, 2014};
+    house_t house1 = {"Colonial", 1809, 500000.0};
+    fruit_t fruit1 = {"Banana"};
+
+    // Put Elements in queue
+    qput(qp1, &car1);
+    qput(qp1, &house1);
+    qput(qp1, &fruit1);
+
+    // Apply Function to queue
+    qapply(qp1, printq);
+
+    // Use qsearch function
+    const char *qfind = "Colonial";
+    house_t *qfound = (house_t *)qsearch(qp1, searchfn, (void *)qfind);
+
+    if (qfound != NULL) {
+        printf("Found the house of style: %s\n", qfound->style);
     } else {
-        // Add a new element to the end of the queue
-        qp->back->next = new_node;
-        qp->back = new_node;
-    }
-
-    return 0; // Success
-}
-                                                                                           
-                                                                                             
-/* get the first first element from queue, removing it from the queue */                     
-void* qget(queue_t *qp){     
-  void* removed;                                                              
-  node_t* current; 
-  if ((qp->front != NULL) && (qp->back != NULL)){                                                                                           
-    current = qp->front;                                                        
-    qp->front = current->next;                                                  
-    removed = current;                                                                                                                     
-  }                                                                             
-  return removed;                                                                               
-                                                                                
-}                                                                                            
-                                                                                             
-/* apply a function to every element of the queue */                                         
-void qapply(queue_t *qp, void (*fn)(void* elementp)){                                        
-  node_t *current = qp->front;                                                               
-  while (current != NULL) {                                                                                        
-    fn(current->elementp);                                                                             
-    current = current->next;                                                                 
-  }                                                                                                                                                      
-} 
-
-/* search a queue using a supplied boolean function
- * skeyp -- a key to search for
- * searchfn -- a function applied to every element of the queue
- *          -- elementp - a pointer to an element
- *          -- keyp - the key being searched for (i.e. will be 
- *             set to skey at each step of the search
- *          -- returns TRUE or FALSE as defined in bool.h
- * returns a pointer to an element, or NULL if not found
- */
-void* qsearch(queue_t *qp, bool (*searchfn)(void* elementp, const void* keyp), const void* skeyp) {
-if (qp == NULL || searchfn == NULL || skeyp == NULL) {
-        return NULL; // Invalid input
-    }
-
-    node_t *current = qp->front;
-
-    while (current != NULL) {
-        if (searchfn(current->elementp, skeyp)) {
-            return current->elementp; // Found a matching element
-        }
-        current = current->next;
-    }
-
-    return NULL; // Element not found
-}
-
-/* concatenatenates elements of q2 into q1
- * q2 is dealocated, closed, and unusable upon completion 
- */
-void qconcat(queue_t *q1p, queue_t *q2p){                                       
-  if ((q1p->front != NULL)&&(q2p->front != NULL)){                              
-    q1p->back->next = q2p->front;                                               
-    q1p->back = q2p->back;                                                      
-  }                                                                             
-  free(q2p);                                                                    
-} 
-
-void* qremove(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp),const void* skeyp){
-	if (skeyp == NULL || qp == NULL) {
-        return NULL; // Invalid input or empty queue
-    }
-    node_t *current = qp->front; 
-    
-    if (current != NULL && searchfn(current->elementp, skeyp)) {
-        // Element to be removed is the front of the queue
-        qp->front = current->next;
-        if (current == qp->back) {
-            qp->back = NULL;
-        }
-        void* removed = current->elementp;
-        free(current);
-        return removed; 
+        printf("House of style: %s not found in the queue.\n", qfind);
     }
     
-    while (current != NULL && current->next != NULL) {
-        if (searchfn(current->next->elementp, skeyp)) {
-            if (current->next == qp->back) {
-                qp->back = current;
-            }
-            node_t *temp = current->next;
-            current->next = current->next->next;
-            void* removed_element = temp->elementp;
-            free(temp);
-            return removed_element; // Element found and removed
-        }
-        current = current->next;
-    }
+	// Initialize second queue
+	queue_t *qp2 = qopen(); 
+	
+	//Define Elements of q2
+    car_t car2 = {"XYZ789", 30000.0, 2023};
+    house_t house2 = {"Art Deco", 1929, 550000.0};
+    fruit_t fruit2 = {"Orange"};
+    
+    
+    //Put Elements in queue 2
+    qput(qp2, &car2);
+    qput(qp2, &house2);
+    qput(qp2, &fruit2);
+    
+    //Apply function to queue 2
+	printf("The queue 2 is:\n"); 
+    qapply(qp2,printq); 
+        
+    //Concatenate queue 1 and queue 2
+    qconcat(qp1, qp2);  
+    
+    //Apply function to newly concatenated queue 1
+    printf("The new queue 1 is:\n"); 
+    qapply(qp1,printq); 
 
-    return NULL; // Element not found
+    // Clean up
+    qclose(qp1);
+
+    return 0;
 }
