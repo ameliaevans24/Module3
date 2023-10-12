@@ -69,13 +69,14 @@ int main() {
 
     // Use qsearch function
     const char *qfind = "Colonial";
-    queue_t *qfound = qsearch(qp1, searchfn, (void *)qfind); // Search queue for house of style Colonial
+    house_t *qfound = (house_t *)qsearch(qp1, searchfn, (void *)qfind);
 
     if (qfound != NULL) {
-        printf("Found the house of style: %s\n", qfind);
+        printf("Found the house of style: %s\n", qfound->style);
     } else {
         printf("House of style: %s not found in the queue.\n", qfind);
     }
+    
 	// Initialize second queue
 	queue_t *qp2 = qopen(); 
 	
@@ -101,8 +102,34 @@ int main() {
     printf("The new queue 1 is:\n"); 
     qapply(qp1,printq); 
 
+	//Create Empty queue
+	queue_t *qp3 = qopen(); 
+	queue_t *qp4 = qopen(); 
+	
+	//Concat Empty queues
+	qconcat(qp3, qp4);  
+	
+	//Apply function to newly concatenated queues
+	qapply(qp3,printq); 
+	printf("Queue is Empty!\n"); 
+	
+	//Concat non-Empty and Empty queues:
+	qconcat(qp1,qp3); 
+	
+	//Print new queue
+	printf("New non-Empty and Empty queue 1:\n");
+	qapply(qp1,printq); 
+	
+	//Concat Empty and non-Empty queue
+	queue_t *qp5 = qopen(); //new empty queue
+	qconcat(qp5,qp1); 
+	
+	//Print new queue
+	printf("New Empty and non-Empty queue 1:\n");
+	qapply(qp5, printq);
+	 
     // Clean up
-    qclose(qp1);
-
+    qclose(qp5);
+		
     return 0;
 }
