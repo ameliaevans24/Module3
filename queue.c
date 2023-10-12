@@ -42,7 +42,7 @@ void qclose(queue_t *qp){
     free(current);                                                              
     current = temp;                                                             
   }                                                                             
-  free(qp);                                                                    \
+  free(qp);                                                                    
                                                                                 
 }                                                                                                                                                                                  
                                                                                                                                                                                                             
