@@ -3,7 +3,7 @@
  *                                                                                                                                                                                                          
  */                                                                                                                                                                                                         
 #include <stdint.h>                                                                                                                                                                                         
-#include "queue.h"                                                                                                                                                                                          
+#include "queue.h"                                                                                                                                                                        
 #include <inttypes.h>                                                                                                                                                                                       
 #include <stddef.h>                                                                                                                                                                                         
 #include <stdlib.h>                                                                                                                                                                                         
@@ -64,18 +64,16 @@ static uint32_t SuperFastHash (const char *data,int len,uint32_t tablesize) {
                                                                                                                                                                                                             
 typedef struct HashTableNode{                                                                                                                                                                               
   const char *key;                                                                                                                                                                                          
-  queue_t *qp;                                                                                                                                                                                              
-                                                                                                                                                                                                            
-}HashTableNode;                                                                                                                                                                                             
-                                                                                                                                                                                                            
+  queue_t *qp;                                                                                                                                                                                                                                                                                                                                                                                                        
+}HashTableNode;   
+                                                                                                                                                                                          
+
 typedef struct hashtable{                                                                                                                                                                                   
-  uint32_t size;                                                                                                                                                                                            
-  //pointer that points to other pointers that point to hashtablenodes                                                                                                                                      
+  uint32_t size;                                                                                                                                                                                                                                                                                                                             
   HashTableNode** table;                                                                                                                                                                                    
+} hashtable_t;                                                                                                                                                                                               
                                                                                                                                                                                                             
-}hashtable_t;                                                                                                                                                                                               
-                                                                                                                                                                                                            
-hashtable_t* hopen(uint32_t hsize) {                                                                                                                                                                        
+hashtable_t *hopen(uint32_t hsize) {                                                                                                                                                                    
   hashtable_t* newHashTable = (hashtable_t*)malloc(sizeof(hashtable_t));                                                                                                                                    
   newHashTable -> size = hsize;                                                                                                                                                                             
   //should this be int?                                                                                                                                                                                     
@@ -92,30 +90,25 @@ hashtable_t* hopen(uint32_t hsize) {
   return newHashTable;                                                                                                                                                                                      
 }                                                                                                                                                                                                           
                                                                                                                                                                                                             
-void hclose(hashtable_t *htp) {                                                                                                                                                                             
-  //it's already empty                                                                                                                                                                                      
-  if (htp == NULL) {                                                                                                                                                                                        
-    return;                                                                                                                                                                                                 
-  }                                                                                                                                                                                                         
+void hclose(hashtable_t *htp) {
+    if (htp == NULL) {
+        return; // Nothing to close
+    }
+
+   //Iterate through the table and free each entry
+    for (int i = 0; i < htp->size; i++) {
+        HashTableNode *node = htp->table[i];
+        if (node != NULL) {
+            qclose(node->qp); // Close the queue
+            free(node); // Free the HashTableNode
+        }
+    }
+    free(htp->table); // Free the table arrays
+    free(htp); // Free the hashtable
+}
+                                                                                                                                                                                                                           
                                                                                                                                                                                                             
-  //free the queues within the node                                                                                                                                                                         
-  for (int i = 0; i < htp -> size; i++) {                                                                                                                                                                   
-    qclose(htp->table[i]->qp);                                                                                                                                                                              
-                                                                                                                                                                                                            
-    //free the nodes themselves                                                                                                                                                                             
-    free(htp->table[i]);                                                                                                                                                                                    
-                                                                                                                                                                                                            
-  }                                                                                                                                                                                                         
-                                                                                                                                                                                                            
-  //free the table of pointers                                                                                                                                                                              
-  free(htp->table);                                                                                                                                                                                         
-                                                                                                                                                                                                            
-  //free the hashtable itself                                                                                                                                                                               
-  free(htp);                                                                                                                                                                                                
-                                                                                                                                                                                                            
-}                                                                                                                                                                                                           
-                                                                                                                                                                                                            
-int32_t hput(hashtable_t *htp, void* ep, const char *key, int keylen) {     
+int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {
                                                                                                                                                                                                            
   //printf("Htp is: %p\n", (void*) htp);                                                                                                                                                                    
   //printf("Ep is: %p\n", ep);                                                                                                                                                                              
@@ -146,7 +139,7 @@ int32_t hput(hashtable_t *htp, void* ep, const char *key, int keylen) {
   return 0;                                                                                                                                                                                                 
 }                                                                                                                                                                                                           
                                                                                                                                                                                                             
-void happly(hashtable_t *htp, void (*fn)(void* ep)) {                                                                                                                                                       
+void happly(hashtable_t *htp, void (*fn)(void* ep)) {                                                                                                                                                     
   uint32_t size = htp->size;                                                                                                                                                                                
   for (int i=0; i<size; i++) {                                                                                                                                                                              
     //not sure if i put in the functiion properly in the argument                                                                                                                                           
@@ -162,10 +155,12 @@ void* hsearch(hashtable_t *htp, bool (*searchfn)(void* elementp, const void* sea
                                                                                                                                                                                                             
 }                                                                                                                                                                                                           
                                                                                                                                                                                                             
-void* hremove(hashtable_t *htp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen) {                                                                              
-  uint32_t hashCode = SuperFastHash(key, keylen, htp->size);                                                                                                                                                
-                                                                                                                                                                                                            
-  //not sure if i filled in the qremove properly, especially entering the function argument                                                                                                                 
-  void* removed = qget(htp-> table[hashCode] -> qp, searchfn, key);                                                                                                                                         
-  return removed;                                                                                                                                                                                           
-  }      
+void *hremove(hashtable_t *htp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen) {    
+	if (htp == NULL || htp->table == NULL || key == NULL) {
+        return NULL; // Invalid input or empty hashtable
+    }
+	int32_t hashCode = SuperFastHash(key, keylen, htp->size);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+	void* removed = qremove(htp-> table[hashCode] -> qp, searchfn,key);      
+	return removed;                                                                                                                                                                                           
+}      
+  
