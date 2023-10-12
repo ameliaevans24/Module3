@@ -127,11 +127,12 @@ if (qp == NULL || searchfn == NULL || skeyp == NULL) {
 /* concatenatenates elements of q2 into q1
  * q2 is dealocated, closed, and unusable upon completion 
  */
-void qconcat(queue_t *q1p, queue_t *q2p){                                       
-  if ((q1p->front != NULL)&&(q2p->front != NULL)){                              
+void qconcat(queue_t *q1p, queue_t *q2p){  
+	
+  //if ((q1p->front != NULL)&&(q2p->front != NULL)){                              
     q1p->back->next = q2p->front;                                               
     q1p->back = q2p->back;                                                      
-  }                                                                             
+  //}                                                                             
   free(q2p);                                                                    
 } 
 
