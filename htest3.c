@@ -48,14 +48,13 @@ bool searchfn(void *elementp, const void *keyp) {
 int main(){                                                                                                                                                                                                 
   car_t car1 = {"ABC123", 20000, 2020};                                                                                                                                                               
   house_t house1 = {"Colonial", 1809, 5000000.};                                                                                                                                                            
-  const char* key1 = "Key1";                                                                                                                                                                                  
-  const char* key2 = "Key2";                                                                                                                                                                                                       
+  const char* key = "Key";                                                                                                                                                                                                                                                                                                                                                                                       
   void* car1adr = &car1;                                                                                                                                                                                    
   void* house1adr = &house1;                                                                                                                                                                                
   hashtable_t* hTable = hopen(5);                                                                                                                                                                           
                                                                                                                                                                                                             
-  hput(hTable, car1adr, key1, 4);                                                                                                                                                                            
-  hput(hTable, house1adr, key2, 4);                                                                                                                                                                          
+  hput(hTable, car1adr, key, 4);                                                                                                                                                                            
+  hput(hTable, house1adr, key, 4);                                                                                                                                                                          
   happly(hTable, printq); 
   //Test Search Function 
   const char *qfind = "Colonial";                                                                                                                                                                                                     
