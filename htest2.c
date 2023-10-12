@@ -18,14 +18,13 @@
 #define MAXREG 10                                                                                           
                                                                                                             
 // Define car struct                                                                                        
-typedef struct car {                                                                                        
-  struct car *next;                                                                                         
+typedef struct car {                                                                                                                                                                               
   char plate[10];                                                                                           
   double price;                                                                                             
   int year;                                                                                                 
 } car_t;                                                                                                    
                                                                                                             
-// Define house struct                                                                                     \
+// Define house struct                                                                                     
                                                                                                             
 typedef struct house {                                                                                      
   char style[MAXREG];                                                                                       
@@ -48,36 +47,37 @@ bool searchfn(void *elementp, const void *keyp) {
 }                                                                                                           
                                                                                                             
 int main(){                                                                                                 
-  car_t car1 = {NULL, "ABC123", 20000, 2020};                                                               
-  house_t house1 = {"Colonial", 1809, 5000000.};                                                            
-                                                                                                            
-  void* car1adr = &car1;                                                                                    
-  void* house1adr = &house1;                                                                                
-  hashtable_t* hTable = hopen(5);                                                                           
-                                                                                                            
-  hput(hTable, car1adr, "ABC123", 1);                                                                       
-  hput(hTable, house1adr,"Colonial", 2);                                                                    
-  happly(hTable, printq);                                                                                   
+  car_t car1 = {"ABC123", 20000, 2020};                                                                                                                                                               
+  house_t house1 = {"Colonial", 1809, 5000000.};                                                                                                                                                            
+  const char* key1 = "Key1";                                                                                                                                                                                  
+  const char* key2 = "Key2";                                                                                                                                                                                                       
+  void* car1adr = &car1;                                                                                                                                                                                    
+  void* house1adr = &house1;                                                                                                                                                                                
+  hashtable_t* hTable = hopen(5);                                                                                                                                                                           
+                                                                                                                                                                                                            
+  hput(hTable, car1adr, key1, 4);                                                                                                                                                                            
+  hput(hTable, house1adr, key2, 4);   
+  happly(hTable, printq);                                                                               
                                                                                                             
   // This case SHOULD WORK    
-  uint32_t keylen = strlen("Colonial"); 
-  void* hFound=hsearch(hTable,searchfn,"Colonial",keylen);                                                       
-  if(hFound != NULL){                                                                                       
-    printf("Our pointer to the entry is %p\n",hFound);                                                      
-  }                                        
-else{                                                                                                     
-    printf("The entry was not found\n");                                                                    
-  }                                                                                                         
+  const char *qfind = "Colonial";                                                                                                                                                                                                     
+  void* hFound=hsearch(hTable,searchfn,qfind,4);                                                                                                                                                       
+  if(hFound != NULL){                                                                                                                                                                                       
+    printf("Our pointer to the entry is %p\n",hFound);                                                                                                                                                      
+  }                                                                                                                                                                                                         
+  else{                                                                                                                                                                                                     
+    printf("The entry was not found\n");                                                                                                                                                                    
+  }                                                                                      
                                                                                                             
   // This case SHOULD NOT WORK 
-  uint32_t keylen = strlen("DEF456"); 
-  hFound=hsearch(hTable,searchfn,"DEF456",keylen);                                                               
-  if(hFound != NULL){                                                                                       
-    printf("Our pointer to the entry is %p\n",hFound);                                                      
-  }                                                                                                         
-  else{                                                                                                     
-    printf("The entry was not found\n");                                                                    
-  }                                                                                                         
+  const char *qnotfind = "DEF456";                                                                                                                                                                                                     
+  void* hnotFound=hsearch(hTable,searchfn,qnotfind,4);                                                                                                                                                       
+  if(hnotFound != NULL){                                                                                                                                                                                       
+    printf("Our pointer to the entry is %p\n",hnotFound);                                                                                                                                                      
+  }                                                                                                                                                                                                         
+  else{                                                                                                                                                                                                     
+    printf("The entry was not found\n");                                                                                                                                                                    
+  }                                                                                                       
                                                                                                             
   hclose(hTable);                                                                                           
   exit(EXIT_SUCCESS);                                                                                       
