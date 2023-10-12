@@ -48,27 +48,27 @@ bool searchfn(void *elementp, const void *keyp) {
 int main(){                                                                                                                                                                                                 
   car_t car1 = {"ABC123", 20000, 2020};                                                                                                                                                               
   house_t house1 = {"Colonial", 1809, 5000000.};                                                                                                                                                            
-  const char* key = "Key";                                                                                                                                                                                  
-                                                                                                                                                                                                            
+  const char* key1 = "Key1";                                                                                                                                                                                  
+  const char* key2 = "Key2";                                                                                                                                                                                                       
   void* car1adr = &car1;                                                                                                                                                                                    
   void* house1adr = &house1;                                                                                                                                                                                
   hashtable_t* hTable = hopen(5);                                                                                                                                                                           
                                                                                                                                                                                                             
-  hput(hTable, car1adr, key, 1);                                                                                                                                                                            
-  hput(hTable, house1adr, key, 2);                                                                                                                                                                          
+  hput(hTable, car1adr, key1, 4);                                                                                                                                                                            
+  hput(hTable, house1adr, key2, 4);                                                                                                                                                                          
   happly(hTable, printq); 
   //Test Search Function 
-  const char *qfind = "Colonial"; 
-  uint32_t keylen = strlen("Coloial");                                                                                                                                                                                                      
-  void* hFound=hsearch(hTable,searchfn,qfind,keylen);                                                                                                                                                       
+  const char *qfind = "Colonial";                                                                                                                                                                                                     
+  void* hFound=hsearch(hTable,searchfn,qfind,4);                                                                                                                                                       
   if(hFound != NULL){                                                                                                                                                                                       
     printf("Our pointer to the entry is %p\n",hFound);                                                                                                                                                      
   }                                                                                                                                                                                                         
   else{                                                                                                                                                                                                     
     printf("The entry was not found\n");                                                                                                                                                                    
-  }                                                                                                                                                                                                         
-  void* removed = hremove(hTable, searchfn,qfind, keylen); 
-	
+  }            
+  //Test Remove Function
+  void* removed = hremove(hTable, searchfn,qfind, 4); 
+  	
   if(removed != NULL){                                                                                                                                                                                       
     printf("Our pointer to the removed entry is %p\n",removed);   
     printf("The new Hashtable is:\n"); 
@@ -76,7 +76,20 @@ int main(){
   }                                                                                                                                                                                                         
   else{                                                                                                                                                                                                     
     printf("The entry was not found\n");                                                                                                                                                                    
-  }                                                                                                                                                                                    
+  }    
+   
+  //Test Remove Function invalid input
+  const char *qnotfind = "Art Deco"; //Key does not exist in table
+  void* nremoved = hremove(hTable, searchfn,qnotfind, 4); 
+  	
+  if(nremoved != NULL){                                                                                                                                                                                       
+    printf("Our pointer to the removed entry is %p\n",nremoved);   
+    printf("The new Hashtable is:\n"); 
+    happly(hTable,printq);                                                                                                                                                    
+  }                                                                                                                                                                                                         
+  else{                                                                                                                                                                                                     
+    printf("The entry was not found\n");                                                                                                                                                                
+  }     
   hclose(hTable);                                                                                                                                                                                           
   exit(EXIT_SUCCESS);                                                                                                                                                                                       
 }  
