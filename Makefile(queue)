@@ -26,7 +26,9 @@ qtest6:   qtest6.o queue.h
           gcc $(CFLAGS) qtest6.o queue1.o -o qtest6                             
                                                                                 
 qtest7:   qtest7.o queue.h                                                      
-          gcc $(CFLAGS) qtest7.o queue1.o -o qtest7        
+          gcc $(CFLAGS) qtest7.o queue1.o -o qtest7 
+qtest8:  qtest8.o  queue.h
+          gcc  $(CFLAGS)  qtest8.o  queue1.o  -o  qtest8
           
 clean:                                                                          
       rm -f *.o qtest qtest1 qtest2 qtest3 qtest4 qtest5 qtest6 qtest7                                                                           
