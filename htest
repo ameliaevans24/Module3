@@ -1,0 +1,24 @@
+/* htest.c ---                                                                                                                                                                                              
+ *                                                                                                                                                                                                          
+ *                                                                                                                                                                                                          
+ * Author: Rashad C. Brown-Mitchell I.                                                                                                                                                                      
+ * Created: Wed Oct 11 18:31:32 2023 (-0400)                                                                                                                                                                
+ * Version:                                                                                                                                                                                                 
+ *                                                                                                                                                                                                          
+ * Description:                                                                                                                                                                                             
+ *                                                                                                                                                                                                          
+ */                                                                                                                                                                                                         
+                                                                                                                                                                                                            
+#include "queue.h"                                                                                                                                                                                          
+#include "hash.h"                                                                                                                                                                                           
+#include <stdlib.h>                                                                                                                                                                                         
+#include <stdio.h>                                                                                                                                                                                          
+                                                                                                                                                                                                            
+int main(){                                                                                                                                                                                                 
+  void* hTable = hopen(5);                                                                                                                                                                                  
+                                                                                                                                                                                                            
+  printf("The address of our hash table is %p\n", hTable);                                                                                                                                                  
+                                                                                                                                                                                                            
+  hclose(hTable);                                                                                                                                                                                           
+  exit(EXIT_SUCCESS);                                                                                                                                                                                       
+}                                                                                                                                                                                                           
