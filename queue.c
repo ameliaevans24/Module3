@@ -137,16 +137,24 @@ if (iqp == NULL || searchfn == NULL || skeyp == NULL) {
  * q2 is dealocated, closed, and unusable upon completion 
  */
 void qconcat(queue_t *q1p, queue_t *q2p){     
-  iqueue_t *iq1p = (iqueue_t*) q1p;  
+    iqueue_t *iq1p = (iqueue_t*) q1p;  
     iqueue_t *iq2p = (iqueue_t*) q2p;                                                                    
     if ((iq1p->front != NULL)&&(iq2p->front != NULL)){                                                            
     iq1p->back->next = iq2p->front;                                                                               
     iq1p->back = iq2p->back;                                                                                      
       }                                                                                                         
-    else{                                                                                                       
+    else if ((iq1p->front == NULL)&&(iq2p->front != NULL)){                                                                                                       
       iq1p->front = iq2p->front;                                                                                  
       iq1p->back = iq2p->back;                                                                                    
-    }                                                                                                           
+    }     
+    else if ((iq1p->front != NULL)&&(iq2p->front == NULL)){                                                                                                       
+      iq1p->back->next = iq2p->front;                                                                               
+      iq1p->back = iq2p->back;                                                                                     
+    }   
+    else if ((iq1p->front == NULL)&&(iq2p->front == NULL)){                                                                                                       
+      iq1p->front = iq2p->front;                                                                                  
+      iq1p->back = iq2p->back;                                                                                    
+    }                                                                                                                   
   free(iq2p);                                                                                                    
 } 
 
