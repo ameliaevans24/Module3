@@ -3,7 +3,9 @@
  *                                                                                                                                                                                                          
  */                                                                                                                                                                                                         
 #include <stdint.h>                                                                                                                                                                                         
-#include "queue.h"                                                                                                                                                                        
+#include "queue.h"
+#include "hash.h"
+
 #include <inttypes.h>                                                                                                                                                                                       
 #include <stddef.h>                                                                                                                                                                                         
 #include <stdlib.h>                                                                                                                                                                                         
@@ -68,43 +70,44 @@ typedef struct HashTableNode{
 }HashTableNode;   
                                                                                                                                                                                           
 
-typedef struct hashtable{                                                                                                                                                                                   
+typedef struct ihashtable{                                                                                                                                                                                   
   uint32_t size;                                                                                                                                                                                                                                                                                                                             
   HashTableNode** table;                                                                                                                                                                                    
-} hashtable_t;                                                                                                                                                                                               
+} ihashtable_t;                                                                                                                                                                                               
                                                                                                                                                                                                             
 hashtable_t *hopen(uint32_t hsize) {                                                                                                                                                                    
-  hashtable_t* newHashTable = (hashtable_t*)malloc(sizeof(hashtable_t));                                                                                                                                    
+  ihashtable_t* newHashTable = (ihashtable_t*)malloc(sizeof(ihashtable_t));                                                                                                                                    
   newHashTable -> size = hsize;                                                                                                                                                                             
   //should this be int?                                                                                                                                                                                     
-  int spaceForAllNodes = sizeof(HashTableNode) * (hsize);                                                                                                                                                   
+  uint32_t spaceForAllNodes = sizeof(HashTableNode) * (hsize);                                                                                                                                                   
   newHashTable -> table = (HashTableNode**)malloc(spaceForAllNodes);                                                                                                                                        
                                                                                                                                                                                                             
   //loop through each node created and give it an empty queue                                                                                                                                               
   for(int i = 0; i <hsize; i++) {                                                                                                                                                                           
-    newHashTable -> table[i] = (HashTableNode*)malloc(sizeof(HashTableNode));                                                                                                                               
+    newHashTable -> table = (HashTableNode**)malloc(sizeof(HashTableNode));                                                                                                                               
     newHashTable -> table[i] -> key = NULL;                                                                                                                                                                 
     newHashTable -> table[i] -> qp = qopen(); 
-  }                                                                                                                                                                                                         
+  }                                                                                                                                                                                                        
                                                                                                                                                                                                             
-  return newHashTable;                                                                                                                                                                                      
+  return (hashtable_t*) newHashTable;                                                                                                                                                                                      
 }                                                                                                                                                                                                           
                                                                                                                                                                                                             
 void hclose(hashtable_t *htp) {
-    if (htp == NULL) {
+	ihashtable_t* ihtp = (ihashtable_t*) htp; 
+	if (ihtp == NULL) {
         return; // Nothing to close
     }
 
    //Iterate through the table and free each entry
-    for (int i = 0; i < htp->size; i++) {
-        HashTableNode *node = htp->table[i];
+    for (int i = 0; i < ihtp->size; i++) {
+        HashTableNode *node = ihtp->table[i];
         if (node != NULL) {
             qclose(node->qp); // Close the queue
             free(node); // Free the HashTableNode
         }
     }
-    free(htp->table); // Free the table arrays
-    free(htp); // Free the hashtable
+    free(ihtp->table); // Free the table arrays
+    free(ihtp); // Free the hashtable
 }
                                                                                                                                                                                                                            
                                                                                                                                                                                                             
@@ -113,9 +116,9 @@ int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {
   //printf("Htp is: %p\n", (void*) htp);                                                                                                                                                                    
   //printf("Ep is: %p\n", ep);                                                                                                                                                                              
   //printf("Key is: %p\n", key);                                                                                                                                                                            
-                                                                                                                                                                                                            
+	ihashtable_t* ihtp = (ihashtable_t*) htp;                                                                                        
   //argument issue                                                                                                                                                                                          
-  if (htp == NULL || key == NULL || ep == NULL) {                                                                                                                                                           
+  if (ihtp == NULL || key == NULL || ep == NULL) {                                                                                                                                                           
     return -1;                                                                                                                                                                                              
   }                                                                                                                                                                                                         
                                                                                                                                                                                                             
@@ -128,9 +131,9 @@ int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {
   }                                                                                                                                                                                                         
                                                                                                                                                                                                             
   newNode -> key = key;                                                                                                                                                                                     
-  uint32_t hashCode = SuperFastHash(key, keylen, htp->size);                                                                                                                                                
+  uint32_t hashCode = SuperFastHash(key, keylen, ihtp->size);                                                                                                                                                
   //printf("Hashcode is: %d\n", hashCode);                                                                                                                                                                  
-  htp -> table[hashCode] = newNode;                                                                                                                                                                         
+  ihtp -> table[hashCode] = newNode;                                                                                                                                                                         
   queue_t* qpNode = qopen();                                                                                                                                                                                
   newNode -> qp = qpNode;                                                                                                                                                                                   
   qput(qpNode, ep);                                                                                                                                                                                         
@@ -139,28 +142,34 @@ int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {
   return 0;                                                                                                                                                                                                 
 }                                                                                                                                                                                                           
                                                                                                                                                                                                             
-void happly(hashtable_t *htp, void (*fn)(void* ep)) {                                                                                                                                                     
-  uint32_t size = htp->size;                                                                                                                                                                                
+void happly(hashtable_t *htp, void (*fn)(void* ep)) {
+
+	ihashtable_t* ihtp = (ihashtable_t*) htp;
+	
+  uint32_t size = ihtp->size;                                                                                                                                                                                
   for (int i=0; i<size; i++) {                                                                                                                                                                              
     //not sure if i put in the functiion properly in the argument                                                                                                                                           
-    qapply(htp->table[i]->qp,fn);                                                                                                                                                                           
+    qapply(ihtp->table[i]->qp,fn);                                                                                                                                                                           
   }                                                                                                                                                                                                         
 }                                                                          
 
 void* hsearch(hashtable_t *htp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen) {                                                                                
-  uint32_t hashCode = SuperFastHash(key, keylen, htp -> size);                                                                                                                                              
+	ihashtable_t* ihtp = (ihashtable_t*) htp; 
+	uint32_t hashCode = SuperFastHash(key, keylen, ihtp -> size);                                                                                                                                              
   //not sure if im filliing in the qsearch properly                                                                                                                                                         
-  void* found = qsearch(htp -> table[hashCode] -> qp, searchfn, key);                                                                                                                                       
+  void* found = qsearch(ihtp -> table[hashCode] -> qp, searchfn, key);                                                                                                                                       
   return found;                                                                                                                                                                                             
                                                                                                                                                                                                             
 }                                                                                                                                                                                                           
                                                                                                                                                                                                             
-void *hremove(hashtable_t *htp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen) {    
-	if (htp == NULL || htp->table == NULL || key == NULL) {
+void *hremove(hashtable_t *htp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen) {
+	ihashtable_t* ihtp = (ihashtable_t*) htp;
+	
+	if (ihtp == NULL || ihtp->table == NULL || key == NULL) {
         return NULL; // Invalid input or empty hashtable
     }
-	int32_t hashCode = SuperFastHash(key, keylen, htp->size);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-	void* removed = qremove(htp-> table[hashCode] -> qp, searchfn,key);      
+	int32_t hashCode = SuperFastHash(key, keylen, ihtp->size);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+	void* removed = qremove(ihtp-> table[hashCode] -> qp, searchfn,key);      
 	return removed;                                                                                                                                                                                           
 }      
   
