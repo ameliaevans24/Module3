@@ -59,8 +59,9 @@ int main(){
   hput(hTable, house1adr,"Colonial", 2);                                                                    
   happly(hTable, printq);                                                                                   
                                                                                                             
-  // This case SHOULD WORK                                                                                  
-  void* hFound=hsearch(hTable,searchfn,"Colonial",2);                                                       
+  // This case SHOULD WORK    
+  uint32_t keylen = strlen("Colonial"); 
+  void* hFound=hsearch(hTable,searchfn,"Colonial",keylen);                                                       
   if(hFound != NULL){                                                                                       
     printf("Our pointer to the entry is %p\n",hFound);                                                      
   }                                        
@@ -68,8 +69,9 @@ else{
     printf("The entry was not found\n");                                                                    
   }                                                                                                         
                                                                                                             
-  // This case SHOULD NOT WORK                                                                              
-  hFound=hsearch(hTable,searchfn,"DEF456",1);                                                               
+  // This case SHOULD NOT WORK 
+  uint32_t keylen = strlen("DEF456"); 
+  hFound=hsearch(hTable,searchfn,"DEF456",keylen);                                                               
   if(hFound != NULL){                                                                                       
     printf("Our pointer to the entry is %p\n",hFound);                                                      
   }                                                                                                         
