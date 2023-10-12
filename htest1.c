@@ -16,8 +16,7 @@
                                                                                                                                                                                                             
 // Define car struct                                                                                                                                                                                        
 typedef struct car {                                                                                                                                                                                        
-                                                                                                                                                                                                            
-  struct car *next;                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                                                                                                                                                
   char plate[10];                                                                                                                                                                                           
   double price;                                                                                                                                                                                             
   int year;                                                                                                                                                                                                 
@@ -28,19 +27,21 @@ void printq(void* elementp){
 }                                                                                                                                                                                                           
                                                                                                                                                                                                             
 int main(){                                                                                                                                                                                                 
-  car_t car1 = {NULL, "ABC123", 20000, 2020};                                                                                                                                                               
-  car_t car2 = {NULL, "DEF456", 32000, 2001};                                                                                                                                                               
-  car_t car3 = {NULL, "GHI789", 50000, 1997};                                                                                                                                                               
-  const char* key = "Key";                                                                                                                                                                                  
+  car_t car1 = {"ABC123", 20000, 2020};                                                                                                                                                               
+  car_t car2 = {"DEF456", 32000, 2001};                                                                                                                                                               
+  car_t car3 = {"GHI789", 50000, 1997};                                                                                                                                                               
+  const char* key1 = "Key1";      
+  const char* key2 = "Key2";       
+  const char* key3 = "Key3";                                                                                                                                                                         
                                                                                                                                                                                                             
   void* car1adr = &car1;                                                                                                                                                                                    
   void* car2adr = &car2;                                                                                                                                                                                    
   void* car3adr = &car3;                                                                                                                                                                                    
   hashtable_t* hTable = hopen(5);                                                                                                                                                                           
                                                                                                                                                                                                             
-  hput(hTable, car1adr, key, 1);                                                                                                                                                                            
-  hput(hTable, car2adr, key, 2);                                                                                                                                                                            
-  hput(hTable, car3adr, key, 3);                                                                                                                                                                            
+  hput(hTable, car1adr, key1, 4);                                                                                                                                                                            
+  hput(hTable, car2adr, key2, 4);                                                                                                                                                                            
+  hput(hTable, car3adr, key3, 4);                                                                                                                                                                            
   happly(hTable, printq);                                                                                                                                                                                   
                                                                                                                                                                                                             
   hclose(hTable);                                                                                                                                                                                           
